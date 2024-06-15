@@ -13,7 +13,7 @@ const sizes = {
 	large: 1024,
 };
 
-// Membuat direktori output jika belum ada
+// ? Create the output directory if it doesn't already exist
 Object.values(outputDirectories).forEach((dir) => {
 	if (!fs.existsSync(dir)) {
 		fs.mkdirSync(dir, { recursive: true });
@@ -35,12 +35,12 @@ fs.readdir(inputDirectory, (err, files) => {
 				);
 
 				sharp(inputPath)
-					.resize(size, size) // Resize to a square
-					.toFile(outputPath, (err, info) => {
+					.resize(size, size) // ? Resize to a square
+					.toFile(outputPath, () => {
 						if (err) throw err;
-						console.log(
-							`Resized ${file} to ${sizeKey} (${size}x${size})`,
-						);
+                console.log(
+                  `Resized ${file} to ${sizeKey} (${size}x${size})`,
+                );
 					});
 			});
 		}

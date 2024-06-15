@@ -1,3 +1,5 @@
+const shuffle  = require("./utils/shuffle-stories");
+
 const path = require("path");
 const fs = require("fs");
 
@@ -10,74 +12,40 @@ const test = (request, h) => {
      return response;
 };
 
-const getSmallImageHandler = (request, h) => {
-     const { imageId } = request.params;     // * http://localhost:5000/images/small/test.jpg
+const getImageHandler = (size) => (request, h) => {
+     const { imageId } = request.params;
 
-     const imagePath = path.join(__dirname, "images", "small", `${imageId}.jpg`);
+     const imagePath = path.join(__dirname, "images", size, `${imageId}.jpg`);
           if (fs.existsSync(imagePath)) {
                return h.file(imagePath);
           }
 
-     const response = h.response({
+     return h.response({
           status: "fail",
-          message: "Gagal memukan gambar (Small)",
-     });
-
-     response.code(404);
-     return response;
-};
-
-const getMediumImageHandler = (request, h) => {
-     const { imageId } = request.params;     // * http://localhost:5000/images/medium/test.jpg
-
-     const imagePath = path.join(__dirname, "images", "medium", `${imageId}.jpg`);
-          if (fs.existsSync(imagePath)) {
-               return h.file(imagePath);
-          }
-
-     const response = h.response({
-          status: "fail",
-          message: "Gagal memukan gambar (Medium)",
-     });
-
-     response.code(404);
-     return response;
-};
-
-const getLargeImageHandler = (request, h) => {
-     const { imageId } = request.params;     // * http://localhost:5000/images/large/test.jpg
-
-     const imagePath = path.join(__dirname, "images", "large", `${imageId}.jpg`);
-          if (fs.existsSync(imagePath)) {
-               return h.file(imagePath);
-          }
-
-     const response = h.response({
-          status: "fail",
-          message: "Gagal memukan gambar (Large)",
-     });
-
-     response.code(404);
-     return response;
+          message: `Gagal memukan gambar (${size})`,
+     }).code(404);
 };
 
 const getAllStoriesHandler = (request, h) => {
      const { title, category } = request.query;
      let filteredStory = [...storyList];
 
-     if (title) {                    // * http://localhost:5000/list?title=Cinderalas
+     if (title) {
           const filteredTitle = title.toLowerCase();
                filteredStory = filteredStory.filter(
                     (story) => story.title.toLowerCase().includes(filteredTitle),
                );
      }
 
-     if (category) {                // * http://localhost:5000/list?category=Dongeng
+     if (category) {
           const filteredType = category.toLowerCase();
                filteredStory = filteredStory.filter(
                     (story) => story.category.toLowerCase().includes(filteredType),
                );
      }
+
+     // ? Shuffle object of stories array
+     filteredStory = shuffle(filteredStory);
 
      return h.response({
           status: "success",
@@ -94,7 +62,7 @@ const getAllStoriesHandler = (request, h) => {
 
 const getStoryDetailById = (request, h) => {
      const { storyId } = request.params;
-     console.log(`Received request for storyId: ${storyId}`);    // ? For temporary testing
+     console.log(`Received request for storyId: ${storyId}`);
 
      const story = storyDetails.find((indexStory) => indexStory.id === storyId);
           if (story) {
@@ -104,20 +72,17 @@ const getStoryDetailById = (request, h) => {
                }).code(200);
           }
 
-     const response = h.response({
+     return h.response({
           status: "fail",
           message: "Detail cerita tidak ditemukan",
-     });
-
-     response.code(404);
-     return response;
+     }).code(404);
 };
 
 module.exports = {
      test,
-     getSmallImageHandler,
-     getMediumImageHandler,
-	getLargeImageHandler,
+     getSmallImageHandler: getImageHandler("small"),
+     getMediumImageHandler: getImageHandler("medium"),
+     getLargeImageHandler: getImageHandler("large"),
      getAllStoriesHandler,
      getStoryDetailById,
 };
