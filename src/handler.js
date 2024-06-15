@@ -85,6 +85,7 @@ const getAllStoriesHandler = (request, h) => {
                id: story.id,
                title: story.title,
                category: story.category,
+               origin: story.origin,
                imageId: story.imageId,
                synopsis: story.synopsis,
           })),
