@@ -1,5 +1,3 @@
-const stories = require("../stories-data/stories");
-
 function shuffle(array) {
      const shuffledArray = [...array];  // ? Making copy of array
      let currentIndex = shuffledArray.length;
@@ -18,9 +16,5 @@ function shuffle(array) {
 
      return shuffledArray;
 }
-
-// ? Shuffle object of stories array
-const shuffledStories = shuffle(stories);
-     console.log(shuffledStories);
 
 module.exports = shuffle;
