@@ -1,4 +1,4 @@
-const shuffle  = require("./utils/shuffle-stories");
+const shuffle = require("./utils/shuffle-stories");
 
 const path = require("path");
 const fs = require("fs");
@@ -47,9 +47,14 @@ const getAllStoriesHandler = (request, h) => {
      // ? Shuffle object of stories array
      filteredStory = shuffle(filteredStory);
 
+     // Remove duplicates from filteredStory
+     const uniqueStories = Array.from(
+		new Set(filteredStory.map((story) => story.id)),
+     ).map((id) => filteredStory.find((story) => story.id === id));
+
      return h.response({
           status: "success",
-          stories: filteredStory.map((story) => ({
+          stories: uniqueStories.map((story) => ({
                id: story.id,
                title: story.title,
                category: story.category,
