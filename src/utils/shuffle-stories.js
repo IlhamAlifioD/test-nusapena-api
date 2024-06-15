@@ -22,3 +22,5 @@ function shuffle(array) {
 // ? Shuffle object of stories array
 const shuffledStories = shuffle(stories);
      console.log(shuffledStories);
+
+module.exports = shuffle;
