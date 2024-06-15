@@ -9,7 +9,7 @@ function shuffle(array) {
                     currentIndex -= 1;
 
                // ? Swap it with the current object
-               const temporaryValue = array[currentIndex];
+               const temporaryValue = shuffledArray[currentIndex];
                     shuffledArray[currentIndex] = shuffledArray[randomIndex];
                     shuffledArray[randomIndex]  = temporaryValue;
           }

@@ -38,19 +38,25 @@ const getAllStoriesHandler = (request, h) => {
      }
 
      if (category) {
-          const filteredType = category.toLowerCase();
+          const filteredCategor = category.toLowerCase();
                filteredStory = filteredStory.filter(
-                    (story) => story.category.toLowerCase().includes(filteredType),
+                    (story) => story.category.toLowerCase().includes(filteredCategor),
                );
      }
 
      // ? Shuffle object of stories array
      filteredStory = shuffle(filteredStory);
 
-     // Remove duplicates from filteredStory
-     const uniqueStories = Array.from(
-		new Set(filteredStory.map((story) => story.id)),
-     ).map((id) => filteredStory.find((story) => story.id === id));
+     // ? Remove duplicates from filteredStory
+     const uniqueStories = [];
+     const seenIds = new Set();
+
+          filteredStory.forEach((story) => {
+               if (!seenIds.has(story.id)) {
+                    uniqueStories.push(story);
+                    seenIds.add(story.id);
+               }
+          });
 
      return h.response({
           status: "success",
